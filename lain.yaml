@@ -1,0 +1,33 @@
+appname: streamrouter
+
+build:
+  base: laincloud/centos-lain:20170405
+  prepare:
+    version: "2"
+    script:
+      - yum install -y supervisor
+      - yum clean all
+      - ./haproxy_install.sh
+
+  script:
+    - go build -o streamwatcher main.go
+    - cp -f supervisord.conf /etc/supervisord.conf
+    - mkdir -p /etc/haproxy/stream.d
+    - cp -f haproxy.cfg /etc/haproxy/haproxy.cfg
+
+test:
+  script:
+    - go test -v ./watcher
+
+worker:
+  cmd: ./start.sh
+  env:
+    - LAINLET_PORT=9001
+    - GRAPHITE_PORT=2003
+    - HAPROXY_PID_FILE=/var/run/haproxy.pid
+  memory: 256m
+  volumes:
+    - /var/log/haproxy
+
+notify:
+  slack: "#lain"
