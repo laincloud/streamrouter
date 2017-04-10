@@ -1,8 +1,9 @@
-package watcher
+package backend
 
 import (
 	"testing"
 
+	"github.com/laincloud/streamrouter/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,12 +39,12 @@ listen testStreamApp_testStreamProc2_8181
   server testStreamProc2_8181_1 192.168.1.1:9181 check
   server testStreamProc2_8181_2 192.168.1.2:9181 check
 `
-	testApp := StreamApp{
+	testApp := model.StreamApp{
 		Name: "testStreamApp",
-		StreamProcs: []StreamProc{
+		StreamProcs: []model.StreamProc{
 			{
 				Name: "testStreamProc1",
-				Upstreams: []StreamUpstream{
+				Upstreams: []model.StreamUpstream{
 					{
 						InstanceNo: 1,
 						Host:       "192.168.0.1",
@@ -53,26 +54,22 @@ listen testStreamApp_testStreamProc2_8181
 						Host:       "192.168.0.2",
 					},
 				},
-				Services: []StreamService{
+				Services: []model.StreamService{
 					{
-						ListenPort:        8080,
-						UpstreamPort:      9080,
-						EnableHealthCheck: false,
-						Send:              `GET\ /\ HTTP/1.0\r\n`,
-						Expect:            `(2..|3..)`,
+						ListenPort:   8080,
+						UpstreamPort: 9080,
 					},
 					{
-						ListenPort:        8081,
-						UpstreamPort:      9081,
-						EnableHealthCheck: true,
-						Send:              `ping\n`,
-						Expect:            `pong\n`,
+						ListenPort:   8081,
+						UpstreamPort: 9081,
+						Send:         `ping\n`,
+						Expect:       `pong\n`,
 					},
 				},
 			},
 			{
 				Name: "testStreamProc2",
-				Upstreams: []StreamUpstream{
+				Upstreams: []model.StreamUpstream{
 					{
 						InstanceNo: 1,
 						Host:       "192.168.1.1",
@@ -82,27 +79,25 @@ listen testStreamApp_testStreamProc2_8181
 						Host:       "192.168.1.2",
 					},
 				},
-				Services: []StreamService{
+				Services: []model.StreamService{
 					{
-						ListenPort:        8180,
-						UpstreamPort:      9180,
-						EnableHealthCheck: true,
-						Send:              `GET\ /\ HTTP/1.0\r\n`,
-						Expect:            `(2..|3..)`,
+						ListenPort:   8180,
+						UpstreamPort: 9180,
+						Send:         `GET\ /\ HTTP/1.0\r\n`,
+						Expect:       `(2..|3..)`,
 					},
 					{
-						ListenPort:        8181,
-						UpstreamPort:      9181,
-						EnableHealthCheck: false,
-						Send:              `ping\n`,
-						Expect:            `pong\n`,
+						ListenPort:   8181,
+						UpstreamPort: 9181,
+						Send:         ``,
+						Expect:       `pong\n`,
 					},
 				},
 			},
 		},
 	}
-	streamWatcher := StreamWatcher{}
-	result, err := streamWatcher.parseStreamApp(testApp)
+	hb := HaproxyBackend{}
+	result, err := hb.parseStreamApp(testApp)
 	assert.Nil(t, err)
 	assert.Equal(t, expected, string(result))
 }

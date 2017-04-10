@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"github.com/mijia/sweb/log"
-	"github.com/laincloud/streamrouter/watcher"
 )
 
 const version = 1.0
@@ -19,7 +19,7 @@ func main() {
 		if debug {
 			log.EnableDebug()
 		}
-		log.Fatal(watcher.Run().Error())
+		log.Fatal(Run().Error())
 	}
 
 }

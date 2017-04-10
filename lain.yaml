@@ -10,14 +10,16 @@ build:
       - ./haproxy_install.sh
 
   script:
-    - go build -o streamwatcher main.go
+    - mkdir -p $GOPATH/src/github.com/laincloud
+    - ln -s /lain/app $GOPATH/src/github.com/laincloud/streamrouter
+    - go build -o streamwatcher $GOPATH/src/github.com/laincloud/streamrouter/main.go
     - cp -f supervisord.conf /etc/supervisord.conf
     - mkdir -p /etc/haproxy/stream.d
     - cp -f haproxy.cfg /etc/haproxy/haproxy.cfg
 
 test:
   script:
-    - go test -v ./watcher
+    - go test -v github.com/laincloud/streamrouter/watcher
 
 worker:
   cmd: ./start.sh

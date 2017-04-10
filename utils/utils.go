@@ -1,13 +1,14 @@
-package watcher
+package utils
 
 import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
+	"syscall"
 )
 
-func getEnvWithDefault(key, defaultVal string) string {
+func GetEnvWithDefault(key, defaultVal string) string {
 	var val string
 	if val = os.Getenv(key); val == "" {
 		val = defaultVal
@@ -15,7 +16,7 @@ func getEnvWithDefault(key, defaultVal string) string {
 	return val
 }
 
-func removeContents(dir string) error {
+func RemoveContents(dir string) error {
 	d, err := os.Open(dir)
 	if err != nil {
 		return err
@@ -34,7 +35,7 @@ func removeContents(dir string) error {
 	return nil
 }
 
-func getPidFromPidfile(pidFile string) int {
+func GetPidFromPidfile(pidFile string) int {
 	data, err := ioutil.ReadFile(pidFile)
 	if err != nil {
 		return 0
@@ -43,7 +44,7 @@ func getPidFromPidfile(pidFile string) int {
 	return pid
 }
 
-func checkProcessAlive(pid int) error {
+func CheckProcessAlive(pid int) error {
 	var (
 		process *os.Process
 		err     error
@@ -51,5 +52,5 @@ func checkProcessAlive(pid int) error {
 	if process, err = os.FindProcess(pid); err != nil {
 		return err
 	}
-	return process.Signal(0)
+	return process.Signal(syscall.Signal(0x0))
 }
