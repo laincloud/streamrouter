@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/laincloud/streamrouter/dispatcher"
 	"github.com/mijia/sweb/log"
 )
 
@@ -19,7 +20,7 @@ func main() {
 		if debug {
 			log.EnableDebug()
 		}
-		log.Fatal(Run().Error())
+		dispatcher.Run()
 	}
 
 }

@@ -23,13 +23,12 @@ test:
 
 worker:
   cmd: ./start.sh
+  num_instances: 2
   env:
     - LAINLET_PORT=9001
     - GRAPHITE_PORT=2003
     - HAPROXY_PID_FILE=/var/run/haproxy.pid
   memory: 256m
-  volumes:
-    - /var/log/haproxy
 
 notify:
   slack: "#lain"

@@ -1,4 +1,4 @@
-package main
+package dispatcher
 
 import (
 	"encoding/json"
@@ -28,7 +28,7 @@ type Dispatcher struct {
 	backend backend.Backend
 }
 
-func Run() error {
+func Run() {
 	dispatcher := Dispatcher{
 		notify:  make(chan interface{}),
 		backend: backend.HaproxyBackend{},
@@ -37,8 +37,8 @@ func Run() error {
 	watcherList := []watcher.Watcher{
 		watcher.StreamWatcher{},
 	}
-	for _, watcher := range watcherList {
-		go watcher.Watch(dispatcher.notify)
+	for _, w := range watcherList {
+		go w.Watch(dispatcher.notify)
 	}
 	for {
 		select {
@@ -48,7 +48,6 @@ func Run() error {
 			dispatcher.reload(data)
 		}
 	}
-	return nil
 }
 
 func (disp *Dispatcher) report() {
