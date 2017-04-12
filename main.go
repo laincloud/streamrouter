@@ -14,7 +14,7 @@ func main() {
 	flag.BoolVar(&showVersion, "v", false, "Show watcher version")
 	flag.BoolVar(&debug, "-debug", false, "Open debug log")
 	if showVersion {
-		fmt.Println("%f\n", version)
+		fmt.Printf("%f\n", version)
 	} else {
 		if debug {
 			log.EnableDebug()

@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"net"
 	"strconv"
 	"time"
-
-	"net"
 
 	"github.com/laincloud/streamrouter/backend"
 	"github.com/laincloud/streamrouter/model"
@@ -88,7 +88,7 @@ func (disp *Dispatcher) reload(data interface{}) {
 	case model.StreamAppList:
 		err = disp.backend.RenderStreamFiles(data.([]model.StreamApp))
 	default:
-		err = fmt.Errorf("Not supported datatype")
+		err = errors.New("Not supported datatype")
 	}
 	if err == nil {
 		disp.backend.Reload()

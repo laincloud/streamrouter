@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestParseStreamApp(t *testing.T) {
+func TestHaproxyBackend_ParseStreamApp(t *testing.T) {
 	const expected = `
 listen testStreamApp_testStreamProc1_8080
   mode tcp

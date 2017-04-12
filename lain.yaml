@@ -19,7 +19,7 @@ build:
 
 test:
   script:
-    - go test -v github.com/laincloud/streamrouter/watcher
+    - go test -v github.com/laincloud/streamrouter/backend
 
 worker:
   cmd: ./start.sh
