@@ -9,8 +9,6 @@ import (
 
 	"path/filepath"
 
-	"fmt"
-
 	"bytes"
 
 	"github.com/laincloud/streamrouter/model"
@@ -54,8 +52,8 @@ var (
 		"-f",
 		hpStreamConfDir,
 	}
-	runParams   = append(hpCmdParams, "-D")
-	checkParams = append(hpCmdParams, "-c")
+	hpRunParams   = append(hpCmdParams, "-D")
+	hpCheckParams = append(hpCmdParams, "-c")
 )
 
 // Implements BackendInterface
@@ -65,7 +63,7 @@ type HaproxyBackend struct {
 func (hb HaproxyBackend) Check() error {
 	ctx, cancel := context.WithTimeout(context.Background(), hpExecTimeout)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, hpCmdName, checkParams...)
+	cmd := exec.CommandContext(ctx, hpCmdName, hpCheckParams...)
 	return cmd.Run()
 }
 
@@ -78,21 +76,6 @@ func (hb HaproxyBackend) Reload() {
 	hb.runHaproxy()
 }
 
-func (hb HaproxyBackend) runHaproxy() {
-	ctx, cancel := context.WithTimeout(context.Background(), hpExecTimeout)
-	defer cancel()
-	var realRunParams []string
-	if haproxyPID := utils.GetPidFromPidfile(hpPIDfile); haproxyPID != 0 {
-		realRunParams = append(runParams, "-sf", fmt.Sprintf("$(cat %s)", hpPIDfile))
-	}
-	cmd := exec.CommandContext(ctx, hpCmdName, realRunParams...)
-	if err := cmd.Run(); err != nil {
-		log.Error(err.Error())
-	} else {
-		log.Info("Haproxy reload successfully")
-	}
-}
-
 func (hb HaproxyBackend) RenderStreamFiles(data []model.StreamApp) error {
 	if len(data) > 0 {
 		if err := utils.RemoveContents(hpStreamConfDir); err != nil {
@@ -103,13 +86,29 @@ func (hb HaproxyBackend) RenderStreamFiles(data []model.StreamApp) error {
 			if confData, err := hb.parseStreamApp(app); err != nil {
 				log.Errorf("Rendering template of app[%s] failed: %s", app.Name, err.Error())
 			} else if err := ioutil.WriteFile(filepath.Join(hpStreamConfDir, app.Name+hpConfExt), confData, 0644); err != nil {
-				log.Errorf("Writing conf file of app[%s] failed: %s", err.Error())
+				log.Errorf("Writing conf file of app[%s] failed: %s", app.Name, err.Error())
 			} else {
-				log.Infof("Writing conf file of app[%s] successfully", err.Error())
+				log.Infof("Writing conf file of app[%s] successfully", app.Name)
 			}
 		}
 	}
 	return nil
+}
+
+func (hb HaproxyBackend) runHaproxy() {
+	ctx, cancel := context.WithTimeout(context.Background(), hpExecTimeout)
+	defer cancel()
+	realRunParams := hpRunParams
+	if data, err := ioutil.ReadFile(hpPIDfile); err == nil {
+		log.Infof("Haproxy is already running(PID file exists). Soft stop instead.")
+		realRunParams = append(hpRunParams, "-sf", string(data))
+	}
+	cmd := exec.CommandContext(ctx, hpCmdName, realRunParams...)
+	if err := cmd.Run(); err != nil {
+		log.Error(err.Error())
+	} else {
+		log.Info("Haproxy reload successfully")
+	}
 }
 
 func (hb HaproxyBackend) parseStreamApp(data model.StreamApp) ([]byte, error) {

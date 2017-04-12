@@ -29,6 +29,8 @@ worker:
     - GRAPHITE_PORT=2003
     - HAPROXY_PID_FILE=/var/run/haproxy.pid
   memory: 256m
+  volumes:
+    - /var/log/supervisor
 
 notify:
   slack: "#lain"

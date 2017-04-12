@@ -1,10 +1,8 @@
 package utils
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strconv"
 	"syscall"
 )
 
@@ -33,15 +31,6 @@ func RemoveContents(dir string) error {
 		}
 	}
 	return nil
-}
-
-func GetPidFromPidfile(pidFile string) int {
-	data, err := ioutil.ReadFile(pidFile)
-	if err != nil {
-		return 0
-	}
-	pid, _ := strconv.Atoi(string(data))
-	return pid
 }
 
 func CheckProcessAlive(pid int) error {

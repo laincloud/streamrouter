@@ -84,12 +84,14 @@ func (disp *Dispatcher) report() {
 func (disp *Dispatcher) reload(data interface{}) {
 	var err error
 	switch data.(type) {
-	case model.StreamAppList:
+	case []model.StreamApp:
 		err = disp.backend.RenderStreamFiles(data.([]model.StreamApp))
 	default:
 		err = errors.New("Not supported datatype")
 	}
 	if err == nil {
 		disp.backend.Reload()
+	} else {
+		log.Errorf("Dispatcher launches reloading failed: %s", err.Error())
 	}
 }
