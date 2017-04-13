@@ -12,7 +12,7 @@ import (
 type StreamWatcher struct {
 }
 
-func (s StreamWatcher) Watch(notify chan interface{}) {
+func (s *StreamWatcher) Watch(notify chan interface{}) {
 	for {
 		if ch, err := LainletClient.Watch("/v2/streamrouter/streamprocs", context.Background()); err != nil {
 			log.Errorf("StreamWatcher connect to lainlet failed. Retry in 3 seconds")

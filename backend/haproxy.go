@@ -60,14 +60,14 @@ var (
 type HaproxyBackend struct {
 }
 
-func (hb HaproxyBackend) Check() error {
+func (hb *HaproxyBackend) Check() error {
 	ctx, cancel := context.WithTimeout(context.Background(), hpExecTimeout)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, hpCmdName, hpCheckParams...)
 	return cmd.Run()
 }
 
-func (hb HaproxyBackend) Reload() {
+func (hb *HaproxyBackend) Reload() {
 	log.Info("Haproxy reload start")
 	if err := hb.Check(); err != nil {
 		log.Errorf("Haproxy syntax checking failed", err.Error())
@@ -76,7 +76,7 @@ func (hb HaproxyBackend) Reload() {
 	hb.runHaproxy()
 }
 
-func (hb HaproxyBackend) RenderStreamFiles(data []model.StreamApp) error {
+func (hb *HaproxyBackend) RenderStreamFiles(data []model.StreamApp) error {
 	if len(data) > 0 {
 		if err := utils.RemoveContents(hpStreamConfDir); err != nil {
 			log.Errorf("Remove stream conf dir contents failed: %s", err.Error())
@@ -95,7 +95,7 @@ func (hb HaproxyBackend) RenderStreamFiles(data []model.StreamApp) error {
 	return nil
 }
 
-func (hb HaproxyBackend) runHaproxy() {
+func (hb *HaproxyBackend) runHaproxy() {
 	ctx, cancel := context.WithTimeout(context.Background(), hpExecTimeout)
 	defer cancel()
 	realRunParams := hpRunParams
@@ -111,7 +111,7 @@ func (hb HaproxyBackend) runHaproxy() {
 	}
 }
 
-func (hb HaproxyBackend) parseStreamApp(data model.StreamApp) ([]byte, error) {
+func (hb *HaproxyBackend) parseStreamApp(data model.StreamApp) ([]byte, error) {
 	var byteArr []byte
 	buf := bytes.NewBuffer(byteArr)
 

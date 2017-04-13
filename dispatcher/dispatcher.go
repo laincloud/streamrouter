@@ -31,11 +31,11 @@ type Dispatcher struct {
 func Run() {
 	dispatcher := Dispatcher{
 		notify:  make(chan interface{}),
-		backend: backend.HaproxyBackend{},
+		backend: &backend.HaproxyBackend{},
 	}
 	reportTicker := time.Tick(checkInterval)
 	watcherList := []watcher.Watcher{
-		watcher.StreamWatcher{},
+		&watcher.StreamWatcher{},
 	}
 	for _, w := range watcherList {
 		go w.Watch(dispatcher.notify)
