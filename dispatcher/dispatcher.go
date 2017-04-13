@@ -20,7 +20,7 @@ const checkInterval = time.Minute
 var (
 	graphiteEndpoint = net.JoinHostPort("graphite.lain", utils.GetEnvWithDefault("GRAPHITE_PORT", "2003"))
 	lainDomain       = utils.GetEnvWithDefault("LAIN_DOMAIN", "lain.local")
-	instanceNo       = utils.GetEnvWithDefault("INSTANCE_NO", "1")
+	instanceNo       = utils.GetEnvWithDefault("DEPLOYD_POD_INSTANCE_NO", "1")
 )
 
 type Dispatcher struct {

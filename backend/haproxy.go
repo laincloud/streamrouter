@@ -32,8 +32,8 @@ listen {{ $appName }}_{{ $proc.Name }}_{{ $service.ListenPort }}
   bind :{{- $service.ListenPort}}
   {{- if and $service.Send $service.Expect }}
   option tcp-check
-  tcp-check send {{ $service.Send }}
-  tcp-check expect string {{ $service.Expect }}
+  tcp-check send-binary {{ $service.Send }}
+  tcp-check expect binary {{ $service.Expect }}
   {{- end }}
 {{- range $upstream := $proc.Upstreams }}
   server {{ $proc.Name }}_{{ $service.ListenPort }}_{{ $upstream.InstanceNo }} {{ $upstream.Host }}:{{ $service.UpstreamPort }} check
