@@ -3,7 +3,6 @@ package utils
 import (
 	"os"
 	"path/filepath"
-	"syscall"
 )
 
 func GetEnvWithDefault(key, defaultVal string) string {
@@ -31,15 +30,4 @@ func RemoveContents(dir string) error {
 		}
 	}
 	return nil
-}
-
-func CheckProcessAlive(pid int) error {
-	var (
-		process *os.Process
-		err     error
-	)
-	if process, err = os.FindProcess(pid); err != nil {
-		return err
-	}
-	return process.Signal(syscall.Signal(0x0))
 }

@@ -21,6 +21,4 @@ type StreamUpstream struct {
 type StreamService struct {
 	UpstreamPort int
 	ListenPort   int
-	Send         string
-	Expect       string
 }
