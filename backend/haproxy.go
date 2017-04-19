@@ -30,11 +30,6 @@ const hpStreamConfTempl = `
 listen {{ $appName }}_{{ $proc.Name }}_{{ $service.ListenPort }}
   mode tcp
   bind :{{- $service.ListenPort}}
-  {{- if and $service.Send $service.Expect }}
-  option tcp-check
-  tcp-check send-binary {{ $service.Send }}
-  tcp-check expect binary {{ $service.Expect }}
-  {{- end }}
 {{- range $upstream := $proc.Upstreams }}
   server {{ $proc.Name }}_{{ $service.ListenPort }}_{{ $upstream.InstanceNo }} {{ $upstream.Host }}:{{ $service.UpstreamPort }} check
 {{- end }}
