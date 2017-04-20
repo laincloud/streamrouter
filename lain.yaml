@@ -31,6 +31,7 @@ worker:
   memory: 256m
   volumes:
     - /var/log/supervisor
+    - /var/log/nginx
 
 notify:
   slack: "#lain"
