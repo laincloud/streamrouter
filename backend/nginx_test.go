@@ -17,7 +17,7 @@ server {
 upstream testStreamApp_testStreamProc1_8080_9080 {
     server 192.168.0.1:9080;
     server 192.168.0.2:9080;
-    check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+    check interval=3000 rise=2 fall=3 timeout=1000 type=tcp;
 }
 
 server {
@@ -29,7 +29,7 @@ server {
 upstream testStreamApp_testStreamProc1_8081_9081 {
     server 192.168.0.1:9081;
     server 192.168.0.2:9081;
-    check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+    check interval=3000 rise=2 fall=3 timeout=1000 type=tcp;
 }
 
 server {
@@ -41,7 +41,7 @@ server {
 upstream testStreamApp_testStreamProc2_8180_9180 {
     server 192.168.1.1:9180;
     server 192.168.1.2:9180;
-    check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+    check interval=3000 rise=2 fall=3 timeout=1000 type=tcp;
 }
 
 server {
@@ -53,7 +53,7 @@ server {
 upstream testStreamApp_testStreamProc2_8181_9181 {
     server 192.168.1.1:9181;
     server 192.168.1.2:9181;
-    check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+    check interval=3000 rise=2 fall=3 timeout=1000 type=tcp;
 }
 `
 	nb := NginxBackend{}

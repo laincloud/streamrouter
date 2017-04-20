@@ -41,7 +41,7 @@ upstream {{ $appName }}_{{ $proc.Name }}_{{ $service.ListenPort}}_{{ $service.Up
 {{- range $upstream := $proc.Upstreams }}
     server {{ $upstream.Host }}:{{ $service.UpstreamPort }};
 {{- end }}
-    check interval=3000 rise=2 fall=5 timeout=1000 type=http;
+    check interval=3000 rise=2 fall=3 timeout=1000 type=tcp;
 }
 {{ end -}}
 {{ end -}}

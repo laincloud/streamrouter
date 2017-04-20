@@ -31,7 +31,7 @@ type Dispatcher struct {
 func Run() {
 	dispatcher := Dispatcher{
 		notify:  make(chan interface{}),
-		backend: &backend.HaproxyBackend{},
+		backend: &backend.NginxBackend{},
 	}
 	reportTicker := time.Tick(checkInterval)
 	watcherList := []watcher.Watcher{
