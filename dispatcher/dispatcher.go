@@ -91,6 +91,7 @@ func (disp *Dispatcher) reload(data interface{}) {
 	}
 	if err == nil {
 		disp.backend.Reload()
+		time.Sleep(time.Second)
 	} else {
 		log.Errorf("Dispatcher launches reloading failed: %s", err.Error())
 	}
