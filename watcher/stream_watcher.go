@@ -3,6 +3,8 @@ package watcher
 import (
 	"context"
 	"encoding/json"
+	"reflect"
+	"sort"
 	"time"
 
 	"github.com/laincloud/streamrouter/model"
@@ -10,6 +12,7 @@ import (
 )
 
 type StreamWatcher struct {
+	oldAppList []model.StreamApp
 }
 
 func (s *StreamWatcher) Watch(notify chan interface{}) {
@@ -30,7 +33,16 @@ func (s *StreamWatcher) Watch(notify chan interface{}) {
 								StreamProcs: app,
 							})
 						}
-						notify <- appList
+						sort.Slice(appList, func(i, j int) bool {
+							return appList[i].Name < appList[j].Name
+						})
+
+						if reflect.DeepEqual(appList, s.oldAppList) {
+							log.Warnf("StreamWatcher receives old data: %+v.", appList)
+						} else {
+							s.oldAppList = appList
+							notify <- appList
+						}
 					}
 				}
 				time.Sleep(retryTime)
